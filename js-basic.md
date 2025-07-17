@@ -16,9 +16,11 @@ Node 目的是使 JavaScript 成为服务端编程语言，在一个 Node 线程
 
 ### 变量
 
-JS 声明变量有 3 种方式：var, const, let
+JS 声明变量有 3 种方式：var, const, let.
+
 var 声明的变量的 scope 是 function 或者 global。
-let 声明的变量的 scope 是 block。
+
+let 和 const 声明的变量的 scope 是 block。
 
 ```
 function varShow() {
