@@ -27,7 +27,7 @@ function constShow() {
     console.log(b); // 2
   }
   // console.log(b); // ReferenceError: b is not defined
-  const c; // SyntaxError: Missing initializer in const declaration
+  // const c; // SyntaxError: Missing initializer in const declaration
   // console.log(c); // ReferenceError: Cannot access 'c' before initialization
 }
 
@@ -37,4 +37,21 @@ const person = {
   age: 3,
 };
 person.age = 5; // This is OK.
-person = { name: "biko" }; // ReferenceError
+// person = { name: "biko" }; // ReferenceError
+
+const i = 1; // i is number
+i.name = "biko";
+console.log(i.name); // undefined, i is still a number
+
+const x = new Number(1); // x is a number
+x.name = "biko";
+console.log(x.name); // biko, x is a Number object
+
+const person = {}; // 空对象
+person.name = "alice"; // 增加属性
+person.age = 9; // 增加属性
+
+// method属性
+person.run = function () {
+  console.log("running after a rabbit.");
+};
