@@ -16,7 +16,25 @@ Node 目的是使 JavaScript 成为服务端编程语言，在一个 Node 线程
 
 ### 数据类型
 
-JS 支持 7 种基本数据类型：**string、number、bigint、boolean、undefined、symbol、null**。
+JS 核心数据类型是 **对象 object**。
+
+JS 的世界中，**一切皆对象**。
+
+```
+const person = {}; // 空对象
+person.name = "alice"; // 增加属性
+person.age = 9; // 增加属性
+
+// method属性
+person.run = function () {
+  console.log("running after a rabbit.");
+};
+
+```
+
+然而，构成对象需要基础数据类型。
+
+所以，JS 支持 7 种基本数据类型：**string、number、bigint、boolean、undefined、symbol、null**。
 
 JS 基本数据类型没有 method、properties。
 
@@ -33,21 +51,7 @@ console.log(x.name); // biko, x is a Number object
 
 ```
 
-JS 核心数据类型是 **对象 object**。
-
-JS 的世界中，**一切皆对象**。
-
-```
-const person = {}; // 空对象
-person.name = "alice"; // 增加属性
-person.age = 9; // 增加属性
-
-// method属性
-person.run = function () {
-  console.log("running after a rabbit.");
-};
-
-```
+基础数据类型是 JS 基础的基础。
 
 ### 变量
 
@@ -128,6 +132,34 @@ Array 支持的 method 有 2 种类型：mutating 和 immutating。
 前者属于 mutating，后者属于 immutating。
 
 immutating 操作是函数式编程的重要特性。在 react 的 state 管理中，要求 state 对象只允许 immutating 操作，否则 react 运行结果未知。
+
+Array 有着丰富有用的 methods，最著名的要数 map 和 reduce，其体现的编程模式几乎在所有现代编程语言中得到支持。
+
+Array.map 的语法：`Array<T>.map(callbackFn<N>: (element: T, index: number, a: Array<T>) => N)`
+
+```
+const t = [1, 2, 3]
+const doublize = value => 2 * value
+t.map(doublize) // [2, 4, 6]
+```
+
+Array.reduce 的语法：`Array<T>.reduce(callbackFn<N>: (accumulator: Array<N>, currentValue: T, currentIndex: number, a: Array<T>) => Array<N>, initialValue: N)`
+
+```
+const t = [1, 2, 3];
+const initialValue = 0;
+const sum = (accumulator, currentValue) => accumulator + currentValue
+const sumValue = array1.reduce(sum, initialValue); // 0 + 1 + 2 + 3 = 6
+```
+
+JS 数组析构赋值，是值得一提的语法糖。
+
+```
+const t = [1, 2, 3, 4, 5]
+const [first, second, ...rest] = t
+console.log(first, second)  // 1 2
+console.log(rest)          // [3, 4, 5]
+```
 
 ### 对象
 
