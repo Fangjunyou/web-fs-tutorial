@@ -163,6 +163,97 @@ console.log(rest)          // [3, 4, 5]
 
 ### 对象
 
+正如 Linux 基本哲学是“一切皆文件”，JS 的基本哲学是“一切皆对象”。
+
+JS 对象定义为属性的无序集合，其中每个属性包含一个原始值、对象或函数。
+
+对象中可以包含对象属性，所以 JS 对象可递归。
+
+定义对象有两种方式：
+
+- 对象字面量（object literals）
+
+  ```
+  const obj = {
+    name: {
+      first: 'Donald',
+      last: 'Trump',
+    },
+    no: 47,
+    birthPlace: 'New York',
+  }
+  ```
+
+- Object 类的实例
+  ```
+  const obj = new Object()
+  obj.name = {
+    first: 'Donald',
+    last: 'Trump',
+  }
+  obj.no = 47
+  obj.birthPlace = 'New York'
+  ```
+- Constructor 实例
+
+  ```
+  function President(name, no, birthPlace) {
+    this.name = name;
+    this.no = no;
+    this.birthPlace = birthPlace;
+  }
+
+  const obj = new President("Donald Trump", 47, "New York");
+  ```
+
+对象属性有两种类型，数据和访问器。
+
+```
+var student = {
+  _age: 10, // 私有data属性
+
+  // 访问器属性
+  set age(value) {
+    if (value < 0) {
+      throw new Error("age must be positive");
+    }
+    this._age = value;
+  },
+  get age() {
+    return this._age;
+  },
+};
+
+console.log(student.age); // 10
+```
+
+对象属性的属性:
+
+- [[Configurable]]
+- [[Enumerable]]
+- [[Writable]]
+- [[Value]]
+
+对象属性的属性可以通过 JS 内置`Object.defineProperty`函数修改。
+
+当[[Configurable]]设置为 false，无法 delete 对应属性，也无法重新设置[[Configurable]]为 true。
+
+```
+var person = {};
+Object.defineProperty(person, "name", {
+  value: "alice",
+  configurable: false, // 可写
+});
+
+delete person.name; // 无任何影响，name没有变化
+
+// TypeError: Cannot assign to read only property 'name' of object '#<Object>'
+Object.defineProperty(person, "name", {
+  value: "alice",
+  configurable: true, // 可写
+});
+```
+
 ### 函数
 
 ### 闭包
