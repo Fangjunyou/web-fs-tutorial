@@ -256,7 +256,7 @@ Object.defineProperty(person, "name", {
 
 ### 函数
 
-JS 函数也是对象, 数据类型 Function。定义函数的方式有两种：函数声明和函数表达式。
+JS 函数也是对象, 数据类型 Function。定义函数的方式有三种：函数声明、函数表达式、匿名函数也叫箭头函数 （arrow function）。
 
 **函数声明**
 
@@ -291,7 +291,9 @@ const sayHi = function () {
 
 ```
 
-通过对象引用变量 funtionName 可以访问函数对象内置属性。常见内置属性：
+**通过函数对象引用变量 funtionName 可以访问函数对象内置属性。**
+
+常见内置属性：
 
 ```
 functionName.displayName;
@@ -311,8 +313,168 @@ typeof inst; // "function", sayHi 是一个函数对象
 Object.isPrototypeOf(sayHi.prototype, inst); // true, sayHi.prototype 是 inst 的原型
 ```
 
+**箭头函数**
+
+```
+const func = () => {
+  console.log("This is an arrow function.");
+  console.log(this); // this 指向全局对象或 undefined（严格模式下）
+};
+```
+
+箭头函数与上面的函数的区别在于 this。箭头函数本身没有 this，其中的 this 是调用环境的 this。
+
+```
+"use strict";
+const outerThis = this; // 在箭头函数外部保存 this
+const func = () => {
+  console.log(this === outerThis); // this 指向外部上下文的 this
+};
+
+func(); // true
+```
+
+```
+"use strict"
+const outerThis = this;
+console.log("Outer this:", this); // {}
+const func = function () {
+  console.log(this); // undefined
+  console.log(this === outerThis);
+};
+
+func(); // false
+```
+
+### this
+
+this 是 JS 代码**运行时**的上下文环境。
+
+我们从全局、函数、箭头函数、构造函数、类分别讨论 this 取值。
+
+**全局 this**
+
+node module 时该值为 module.exports
+
+node REPL 时该值为 global。
+
+浏览器环境下，该值为 window。
+
+**函数**
+当函数直接调用时，this 取值：
+
+- strict 模式下，this 等于 undefined。
+- 非 strict 模式下，this 等于 global。
+
+**箭头函数**
+箭头函数本身没有 this，其函数体中的 this 是调用函数的 this。。
+
+- 当在 node module 顶层代码中运行，其 this 是全局 this，即 module.exports.
+- 当在浏览器顶层代码中运行时，this 即 window。
+- 当在函数中被调用，其 this 是调用函数的 this。
+
+**对象函数**
+
+```
+const person = {
+  name: "John",
+  greet: function () {
+    console.log(this === person);
+    console.log(this === global);
+  },
+  hello: () => {
+    console.log(this === person); // false,
+    console.log(this === global); // false,
+    console.log(this === module.exports); // true
+  },
+};
+
+// this === person 为true
+// this === global 为false
+person.greet();
+
+// this === person 为false
+// this === global 为true
+const greetFunc = person.greet;
+greetFunc();
+
+// this === person 为false
+// this === global 为false
+// this === module.exports 为true
+person.hello();
+const helloFunc = person.hello;
+helloFunc();
+
+```
+
+**构造函数**
+
+当使用 new 操作符，会自动空对象`{}`，并把该空对象赋值给`this`。
+
+构造函数体中的语句执行结果保存在`this`引用的该对象中。
+
+非 strict 模式下：
+
+```
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+const alice = new Person("Alice", 30);
+console.log(alice); // Person { name: 'Alice', age: 30 }
+
+// 非strict模式下，普通函数调用中的this为global
+const p = Person("Alice", 30);
+console.log(p); // undefined
+console.log(global.name); // "Alice"
+console.log(global.age); // 30
+
+```
+
+strict 模式下：
+
+```
+"use strict";
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+const alice = new Person("Alice", 30);
+console.log(alice); // Person { name: 'Alice', age: 30 }
+
+// strict模式下，普通函数调用中的this为undefined
+const p = Person("Alice", 30); // TypeError: Cannot set properties of undefined (setting 'name')
+```
+
+**类**
+
+```
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  greet() {
+    console.log(`Hello, my name is ${this.name}`);
+  }
+
+  hello = () => {
+    console.log(`Hi, I'm ${this.name}`);
+  };
+}
+
+const alice = new Person("Alice");
+alice.greet(); // Hello, my name is Alice
+alice.hello(); // Hi, I'm Alice
+
+const greet = alice.greet;
+// greet(); // 因为this为undefined，报错误：ypeError: Cannot read properties of undefined
+const hello = alice.hello; // hello是箭头函数，this指向alice
+hello(); // Hi, I'm Alice
+```
+
 ### 闭包
 
 ### 类
-
-### this
