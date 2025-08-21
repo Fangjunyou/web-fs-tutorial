@@ -477,4 +477,54 @@ hello(); // Hi, I'm Alice
 
 ### 闭包
 
+闭包是一个函数，这个函数在另一个函数中创建并作为其返回值返回。
+
+函数被调用的时候，会创建一个叫 scope 的对象，该对象包含函数参数键值对，以及 this、arguments 键值对。
+
+例如：
+
+```
+function func(a, b) {
+  return a + b;
+}
+func(1, 2);
+```
+
+当执行`func(1, 2)`时，函数对象 func 内部维护的 scope chain，指向类似下面的 scope 对象：
+
+```
+{
+  'a': 1,
+  'b': 2,
+  'this': [[object]],
+  'arguments': ['a', 'b']
+}
+```
+
+当`func(1, 2)`执行完成，函数对象 func 内部的 scope chain 被撤销，其维护的 scope 对象引用计数为 0，JS 垃圾回收机制对其回收。
+
+然而，在闭包场景下，情况有所不同。
+
+```
+function func(a, b) {
+  return function (num) {
+    return a + b + num;
+  };
+}
+
+const sum = func(1, 2);
+console.log(sum(3)); // Output: 6
+
+```
+
+当语句`const sum = func(5, 10);`执行后，函数对象 sum 会引用`func(5, 10)`的 scope 对象，此时`func(5, 10)`的 scope 对象的引用计数不为 0，不会进行垃圾回收。
+
+当执行语句`sum(15)`时，sum 创建自己的 scope 对象`{'num': 15, ...}`, 与`func(5, 10)`的 scope 对象形成 scope chain，形如：
+
+`{ 'a': 1, 'b': 2, ...}` <<- `{'num': 15, ...}`。
+
+sum 函数体中的`a + b + sum`语句顺着 scope chain 找到变量 a、b、sum 的取值。
+
+以上为闭包的粗略原理，希望能帮助你真正理解闭包。只有真正理解，才能正确运用，也能帮助对第三方代码深刻理解。
+
 ### 类
